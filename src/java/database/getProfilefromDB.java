@@ -38,6 +38,15 @@ public class getProfilefromDB {
         pr.setPosts(profileArray);
         pr.setUsername(username);
         pr.setUserage(getAge(conn, username));
+        pr.setProfileimage(new getuserDP().getDP(conn, username));
+        String cover = getCoverpic(conn, username);
+        String arr[] = getdata(conn, username);
+        pr.setPhone(arr[0]);
+        pr.setAddress(arr[1]);
+        pr.setAbout(arr[2]);
+        pr.setPlayerlevel(arr[3]);
+        pr.setGamelevel(arr[4]);
+        pr.setCoverimage(cover);
         return pr;
     }
     
@@ -85,7 +94,7 @@ public class getProfilefromDB {
                  
                 byte[] imageBytes = outputStream.toByteArray();
                 String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-                 
+                String profile = new getuserDP().getDP(conn, uname);
                 inputStream.close();
                 outputStream.close();
                 post.setPostNo(postno);
@@ -94,6 +103,7 @@ public class getProfilefromDB {
                 post.setLikes(likes);
                 post.setByteArray(imageArray);
                 post.setBase64Image(base64Image);
+                post.setProfilepic(profile);
                 post.setCommentTableName(commenttablename);
                 post.setComments(commentArray);
             }
@@ -137,4 +147,73 @@ public class getProfilefromDB {
         }
         return num;
     }
+    
+    public static String getCoverpic(Connection conn,String username){
+        String querry = "Select coverimage from userdata where username=?";
+        String cover = "";
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(querry);
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()){
+                Blob blob = rs.getBlob("coverimage");
+                if(blob != null){
+                byte imageArray[] = blob.getBytes(1,(int)blob.length());
+                InputStream inputStream = blob.getBinaryStream();
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                byte[] buffer = new byte[4096];
+                int bytesRead = -1;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);                  
+                }
+                 
+                byte[] imageBytes = outputStream.toByteArray();
+                cover = "data:image/jpg;base64,"+Base64.getEncoder().encodeToString(imageBytes);
+                
+                inputStream.close();
+                outputStream.close();
+                }else{
+                    cover = "assets/images/bf.jpg";
+                }
+            }
+            if(cover.equals("")){
+                System.out.println("ASsigning default cover");
+                cover = "assets/images/bf.jpg";
+            }
+        } catch (Exception e) {
+            System.out.println("Error "+e);
+        }
+        
+        return cover;
+    }
+    
+    public static String[] getdata(Connection conn,String username){
+        String array[] = new String[5];
+        String querry = "Select * from userdata where username=?";
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(querry);
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()){
+                
+                array[0] = rs.getString("phone")!=null?rs.getString("phone"):"(+44) 123 456 789";
+                array[1] = rs.getString("address")!=null?rs.getString("address"):"Dubai main road , Dubai.";
+                array[2] = rs.getString("about")!=null?rs.getString("about"):"I am a full time Gamer.I play all types of games";
+                array[3] = rs.getString("playerlevel")!=null?rs.getString("playerlevel"):"Pro";
+                array[4] = rs.getString("games")!=null?rs.getString("games"):"COD"+"\n"+"PUBG"+"\n"+"COC";
+               
+            }
+            else{
+                array[0] = "(+44) 123 456 789";
+                array[1] = "Dubai main road , Dubai.";
+                array[2] = "I am a full time Gamer.I play all types of games";
+                array[3] = "Pro";
+                array[4] = "COD"+"\n"+"PUBG"+"\n"+"COC";
+            }
+        } catch (Exception e) {
+            System.out.println("Error"+e);
+        }
+        return array;
+    }
+    
 }

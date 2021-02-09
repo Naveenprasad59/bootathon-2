@@ -37,7 +37,7 @@
   </script>
 </head>
 <body style="background-image: url('assets/images/bf.jpg')">
-  
+    <%  String value = (String) request.getAttribute("Validate");         %>
   <div class="cont">
     <div class="form sign-in">
        <form name="loginForm" method = "post"  action="<%= request.getContextPath() %>/login" >
@@ -48,14 +48,18 @@
       </label>
       <label>
         <span>Password</span>
-        <input type="password" name="password" >
+        <input type="password" name="password" required>
       </label>
            <button class="submit"  type="submit" value="Submit" >Log In</button>
-      <p class="forgot-pass">Forgot Password ?</p>
+           
+      
       <div id='passError1'>
             
       </div>
      </form>
+          
+       <p class="forgot-pass" style="color:red"><%= value %></p>
+    
     </div>
 
     <div class="sub-cont">
@@ -94,7 +98,7 @@
         </label>
         <button type="submit" value="Submit" class="submit">Register!</button>
         </form>
-        <div id='passError2'>
+        <div id='passError2' style="color:red" >
             
         </div>
       </div>

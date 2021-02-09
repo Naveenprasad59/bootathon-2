@@ -33,10 +33,12 @@ public class getFeedposts {
             
             String posttablename = getUserpostname(conn, user);
             int num = getlastestpostno(conn, posttablename);
-            if(num == 0 ){
+            while(num == 0){
                 user = user-1;
                 posttablename = getUserpostname(conn, user);
+                num = getlastestpostno(conn, posttablename);
             }
+            
             System.out.println("USER--------------------"+user);
             Post post = getpost(conn, posttablename);
             feedArray[i] = post;
@@ -81,7 +83,7 @@ public class getFeedposts {
                  
                 byte[] imageBytes = outputStream.toByteArray();
                 String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-                 
+                String profile = new getuserDP().getDP(conn, uname);
                 inputStream.close();
                 outputStream.close();
                 post.setPostNo(postno);
@@ -90,6 +92,7 @@ public class getFeedposts {
                 post.setLikes(likes);
                 post.setByteArray(imageArray);
                 post.setBase64Image(base64Image);
+                post.setProfilepic(profile);
                 post.setCommentTableName(commenttablename);
                 post.setComments(commentArray);
             }
@@ -139,7 +142,7 @@ public class getFeedposts {
         PreparedStatement pstmt = conn.prepareStatement(querry);
     //    pstmt.setString(1, tablename);
         ResultSet ra = pstmt.executeQuery();
-        while(ra.next()){
+        if(ra.next()){
                num = ra.getInt("MAX(postno)");
                System.out.println("MAXIMUM POSTS AT NAVEEN@GMAIL.COM"+num);
            }

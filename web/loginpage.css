@@ -105,13 +105,13 @@ button{
   text-align: center;
   font-size: 14px;
   font-weight: 600;
-  color: #0c0101;
-  cursor: pointer;
+  color: red;
+  /*cursor: pointer;*/
 }
 
-.forgot-pass:hover{
+/*.forgot-pass:hover{
   color: red;
-}
+}*/
 
 
 
@@ -309,4 +309,8 @@ a{
 .list a:hover{
   color: blue;
   text-decoration: none;
+}
+
+.colu{
+    color: red;
 }

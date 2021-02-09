@@ -4,6 +4,8 @@
     Author     : Naveen Prasad
 --%>
 
+<%@page import="models.user"%>
+<%@page import="database.getuserDP"%>
 <%@page import="models.Comment"%>
 <%@page import="java.io.OutputStream"%>
 <%@page import="models.Post"%>
@@ -191,7 +193,7 @@ a{
                  var m=document.querySelector("."+j).style.color="black";
             }
         }
-
+       
     </script>
       <body>
         <% 
@@ -262,6 +264,9 @@ a{
         </div>
       </nav>
         <!--</header>-->
+        <%
+             user userprofile = (user)request.getAttribute("profile");    
+        %>
         <div class="container-fluid " style="background: burlywood;">
         <div class="page-inner no-page-title">
              <!--start page main wrapper--> 
@@ -273,9 +278,9 @@ a{
                                 <h4 class="card-title">User Profile</h4>
                             </div>
                             <div class="card-body user-profile-card mb-3">
-                                <img src="images/avatar.jpg" class="user-profile-image rounded-circle" alt="" />
-                                <h4 class="text-center h6 mt-2"><%= uname %></h4>
-                                <p class="text-center small">Pro Gamer</p>
+                                <img src="<%= userprofile.getProfileimage() %>" class="user-profile-image rounded-circle" alt="" />
+                                <h4 class="text-center h6 mt-2"><%= userprofile.getUsername() %></h4>
+                                <p class="text-center small"><%= userprofile.getPlayerlevel() %> Gamer</p>
 <!--                                <button class="btn btn-theme btn-sm">Follow</button>
                                 <button class="btn btn-theme btn-sm">Message</button>-->
                             </div>
@@ -298,7 +303,7 @@ a{
                                 <h4 class="card-title">About</h4>
                             </div>
                             <div class="card-body mb-3">
-                                <p class="mb-0">I am a full time Gamer.I play all types of games </p>
+                                <p class="mb-0"><%= userprofile.getAbout() %></p>
                             </div>
                             <hr />
                             <div class="card-heading clearfix mt-3">
@@ -314,11 +319,11 @@ a{
                                             </tr>
                                             <tr>
                                                 <th scope="row">Phone:</th>
-                                                <td>(+44) 123 456 789</td>
+                                                <td><%= userprofile.getPhone() %></td>
                                             </tr>
                                             <tr>
                                                 <th scope="row">Address:</th>
-                                                <td>Dubai main road , Dubai.</td>
+                                                <td><%= userprofile.getAddress() %></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -356,21 +361,22 @@ a{
                     <%  String id = "s"+String.valueOf(i); %>
                     <%  String id2 = "r"+String.valueOf(i); %>
                     <%  String id3 = "rr"+String.valueOf(i); %>
-                    <%  System.out.println(id);                                    %>
+                    <%  System.out.println("LIKES "+FeedArray[i].getLikes());%>
+                    <%  System.out.println(id);%>
                     <div class="bg-white border mt-2">
                         <div>
                             <div class="d-flex flex-row justify-content-between align-items-center p-2 border-bottom">
-                                <div class="d-flex flex-row align-items-center feed-text px-2"><img class="rounded-circle" src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1574583336/AAA/4.jpg" width="50" height="45S">
+                                <div class="d-flex flex-row align-items-center feed-text px-2"><img class="rounded-circle" src="<%= FeedArray[i].getProfilepic() %>" width="50" height="45S">
                                     <div class="d-flex flex-column flex-wrap ml-2"><span class="font-weight-bold"> <%= FeedArray[i].getUsername() %>                 </span><span class="text-black-50 time">40 minutes ago</span></div>
                                 </div>
                                 <div class="feed-icon px-2"><i class="fa fa-ellipsis-v text-black-50"></i></div>
                             </div>
                         </div>
-                        <div class="p-2 px-3"><span>  <%= FeedArray[i].getCaption() %>                    </span></div>
-                        <div class="feed-image p-2 px-3"><img class="img-fluid img-responsive" src="data:image/jpg;base64,<%= FeedArray[i].getBase64Image() %>"></div>
+                        <div class="p-2 px-3"><span>  <%= FeedArray[i].getCaption() %>  </span></div>
+                        <div class="feed-image p-2 px-3"><img class="img-fluid img-responsive" src="data:image/jpg;base64,<%= FeedArray[i].getBase64Image() %>" width="650"></div>
                         <div class="bg-white">
                             <div class="d-flex flex-row fs-12">
-                                <div class="like p-2 cursor"><i class="fa fa-thumbs-up <%= id2%>" onclick="like(<%= i %>)"  ></i><span onclick="like(<%= i %>)"  class="ml-1 <%= id3%>">Like</span></div>
+                                <div class="like p-2 cursor"><i class="fa fa-thumbs-up <%= id2%>" onclick="like(<%= i %>)"  ></i><span onclick="like(<%= i %>)"  class="ml-1 <%= id3%>"> <%=FeedArray[i].getLikes()%> Likes</span></div>
                                 <div class="like p-2 cursor"><i onclick="" class="fa fa-comment"></i><span onclick="dk(<%= i %>)" class="ml-1">Comment</span></div>
                                 <div class="like p-2 cursor"><i class="fa fa-share"></i><span class="ml-1">Share</span></div>
                             </div>
@@ -384,9 +390,9 @@ a{
 
                                 <div class="comment-widgets">
                                     <div class="d-flex flex-row comment-row m-t-0">
-                                       <div class="p-2"><img src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1574583336/AAA/4.jpg" alt="user" width="50" class="rounded-circle"></div>
+                                       <div class="p-2"><img src="<%=  comments[k].getProfileimg() %>" alt="user" width="50" class="rounded-circle"></div>
                                        <div class="comment-text w-100">
-                                           <h6 class="font-medium">   <%= comments[k].getCommentedUser()  %>          </h6> <span class="m-b-15 d-block">  <%= comments[k].getComment() %>           </span>
+                                           <h6 class="font-medium">   <%= comments[k].getCommentedUser()  %>  </h6> <span class="m-b-15 d-block">  <%= comments[k].getComment() %>           </span>
                                        </div>
                                     </div>
                                 </div>
@@ -418,7 +424,7 @@ a{
                             <form method="post" action="<%= request.getContextPath() %>/homeAddcomment">
 
                             <div class="d-flex flex-row align-items-start">
-                                <img class="rounded-circle" src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1574583336/AAA/4.jpg" width="35" height="30">
+                                <img class="rounded-circle" src="<%= new getuserDP().getDP(new connect().getCon(), uname)  %>" width="35" height="30">
                                 <textarea name="comment" class="form-control ml-1 shadow-none textarea" placeholder="Add a comment"></textarea>
                             </div>
                                 <input type="hidden" name="authorname" value="<%= FeedArray[i].getUsername()%>" />

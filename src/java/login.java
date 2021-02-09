@@ -3,6 +3,7 @@ import database.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.MessageDigest;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -20,8 +21,12 @@ public class login extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {  
-      response.sendRedirect("login.jsp");
+            throws ServletException, IOException {
+      
+      request.setAttribute("Validate", " ");
+      RequestDispatcher rd =  request.getRequestDispatcher("login.jsp");
+      rd.forward(request, response);
+  //    response.sendRedirect("./login");
     }
 
    
@@ -41,7 +46,10 @@ public class login extends HttpServlet {
        //    PrintWriter out=response.getWriter();
        //    out.println("<font color=red>Either user name or password is wrong.</font>");
        //    request.getRequestDispatcher("login.jsp").include(request,response);
-           response.sendRedirect("./login");
+           request.setAttribute("Validate", "Wrong username or password");
+           RequestDispatcher rd =  request.getRequestDispatcher("login.jsp");
+           rd.forward(request, response);
+         //  response.sendRedirect("./login");
        }       
     }
     

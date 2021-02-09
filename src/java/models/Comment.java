@@ -14,6 +14,7 @@ public class Comment {
     private String comment;
     private String authorname;
     private int postno;
+    private String profileimg;
     /**
      * @return the commentedUser
      */
@@ -68,6 +69,20 @@ public class Comment {
      */
     public void setPostno(int postno) {
         this.postno = postno;
+    }
+
+    /**
+     * @return the profileimg
+     */
+    public String getProfileimg() {
+        return profileimg;
+    }
+
+    /**
+     * @param profileimg the profileimg to set
+     */
+    public void setProfileimg(String profileimg) {
+        this.profileimg = profileimg;
     }
     
 }

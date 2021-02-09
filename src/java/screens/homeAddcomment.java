@@ -39,7 +39,7 @@ public class homeAddcomment extends HttpServlet {
         String commentTablename = request.getParameter("commentTablename");
         int status = new addComment().addcomment(postno, commentTablename, commentername, authorname, comment);
         System.out.println("COMMENT ADDING STATUS"+status);
-        response.sendRedirect("./home");
+        response.sendRedirect("./profile?username="+authorname);
     }
 
     

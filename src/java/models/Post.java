@@ -17,6 +17,7 @@ public class Post {
     private int postNo;
     private String commentTableName;
     private String base64Image;
+    private String profilepic;
     private Comment comments[];
     /**
      * @return the username
@@ -128,6 +129,20 @@ public class Post {
      */
     public void setComments(Comment[] comments) {
         this.comments = comments;
+    }
+
+    /**
+     * @return the profilepic
+     */
+    public String getProfilepic() {
+        return profilepic;
+    }
+
+    /**
+     * @param profilepic the profilepic to set
+     */
+    public void setProfilepic(String profilepic) {
+        this.profilepic = profilepic;
     }
     
 }

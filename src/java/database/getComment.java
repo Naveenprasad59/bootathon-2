@@ -29,6 +29,7 @@ public class getComment {
             int i = 0;
             while(rs.next()){
                 String commentUser = rs.getString("uname");
+                String profileimg = new getuserDP().getDP(conn, commentUser);
                 String comment = rs.getString("comment");
                 int postno = rs.getInt("postno");
                 String authorname = rs.getString("authorname");
@@ -37,6 +38,7 @@ public class getComment {
                 c.setCommentedUser(commentUser);
                 c.setAuthorname(authorname);
                 c.setPostno(postno);
+                c.setProfileimg(profileimg);
                 System.out.println("LOOP EXCECUTED");
                 commentsArray[i] = c;
                 i = i + 1;

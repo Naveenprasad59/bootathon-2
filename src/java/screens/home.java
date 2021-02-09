@@ -8,6 +8,7 @@ package screens;
 import database.addPost;
 import database.connect;
 import database.getFeedposts;
+import database.getProfilefromDB;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import models.Post;
+import models.user;
 
 /**
  *
@@ -39,7 +41,9 @@ public class home extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
      Post feedArray[] = new getFeedposts().getFeedfromDB();
-     
+     String username = getUsername(request);
+     user userprofile = new getProfilefromDB().profile(username);
+     request.setAttribute("profile", userprofile);
      System.out.println(feedArray.length);
      request.setAttribute("feed", feedArray);
      RequestDispatcher rd =  request.getRequestDispatcher("home.jsp");

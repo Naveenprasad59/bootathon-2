@@ -4,6 +4,8 @@
     Author     : Naveen Prasad
 --%>
 
+<%@page import="database.getuserDP"%>
+<%@page import="database.connect"%>
 <%@page import="models.Post"%>
 <%@page import="models.Comment"%>
 <%@page import="models.user"%>
@@ -13,7 +15,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Profile page</title>
     <link rel="stylesheet" type="text/css" href="./assets/profilepage.css">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
@@ -29,6 +31,17 @@
   display: none;
   
 }
+
+.colorlink,.colorlink:hover{
+    text-decoration: none;
+    color:white;
+}
+
+.marg{
+    margin-left: 3%;
+}
+
+
 </style>
 <script>
         var d={};
@@ -99,29 +112,37 @@
             <li class="nav-item active">
                 <a class="nav-link" href="./profile?username=<%= uname %>">Profile</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="<%= request.getContextPath() %>/logout">Logout</a>
+            </li>
             <% } %>
           </ul>
           
         </div>
       </nav>   
     <%  user userprofile = (user)request.getAttribute("profile");
-    System.out.println("Username "+userprofile.getUsername()); %>
+    System.out.println("Username "+userprofile.getUsername()); 
+    %>
+    
     <div class="container" style="margin-top: 5%">
 <div class="row">
     <div class="col-sm-10 col-sm-offset-2">
         <div class="panel panel-white profile-widget">
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="image-container bg8" style="background:url('assets/images/bf.jpg')">  
-                        <img src="images/avatar.jpg" class="avatar" alt="avatar"> 
+                    <div class="image-container bg8 bgcover" style="background:url(<%=userprofile.getCoverimage()%>)">  
+                        <img src="<%=userprofile.getProfileimage() %>" class="avatar" alt="avatar"> 
                     </div>
                 </div>
                 <div class="col-sm-12">
                     <div class="details">
                         <h4><%= userprofile.getUsername() %> <i class="fa fa-sheild"></i></h4>
-                        <div><h5>Gamer</h5></div>
-                        <div><h5>Streamer</h5></div>
-                        <div><h5>Loves to play games and die...</h5></div>
+                        <div><h5>Gamer level : <%= userprofile.getPlayerlevel() %> Gamer</h5></div>
+                        <div><h5>About : <%= userprofile.getAbout() %></h5></div>
+                        <div><h5>Address : <%= userprofile.getAddress() %></h5></div>
+                        <% if(uname.equals(userprofile.getUsername())){ %>
+                        <button class="btn btn-info"><a class="colorlink" href="<%=request.getContextPath()%>/updateProfile" >Update Profile</a></button>
+                        <% }%>
                     </div>
                 </div>
                  
@@ -137,7 +158,7 @@
 <!--                    <div class="d-flex flex-row justify-content-between align-items-center p-4 bg-white border">
                          
                         <div class="form-group">
-                            <form method="post" action="<%= request.getContextPath() %>/home" enctype="multipart/form-data" >
+                            <form method="post" action="/home" enctype="multipart/form-data" >
                             <textarea name="caption" class="form-control" id="exampleFormControlTextarea1" rows="3" cols="100" placeholder="Start a post"></textarea>
                             <input type="file" class="form-control-file" id="exampleFormControlFile1" name="img" accept="image/*">
                                 <div class="form-group p-3">
@@ -159,14 +180,14 @@
                     <div class="bg-white border mt-2">
                         <div>
                             <div class="d-flex flex-row justify-content-between align-items-center p-2 border-bottom">
-                                <div class="d-flex flex-row align-items-center feed-text px-2"><img class="rounded-circle" src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1574583336/AAA/4.jpg" width="50" height="45S">
-                                    <div class="d-flex flex-column flex-wrap ml-2"><span class="font-weight-bold"> <%= FeedArray[i].getUsername() %>                 </span><span class="text-black-50 time">40 minutes ago</span></div>
+                                <div class="d-flex flex-row align-items-center feed-text px-2"><img class="rounded-circle" src="<%= FeedArray[i].getProfilepic() %>" width="50" height="45S">
+                                    <div class="d-flex flex-column flex-wrap ml-2"><span class="font-weight-bold"> <%= FeedArray[i].getUsername() %>                 </span><span class="text-black-50 time"></span></div>
                                 </div>
                                 <div class="feed-icon px-2"><i class="fa fa-ellipsis-v text-black-50"></i></div>
                             </div>
                         </div>
                         <div class="p-2 px-3"><span>  <%= FeedArray[i].getCaption() %>                    </span></div>
-                        <div class="feed-image p-2 px-3"><img class="img-fluid img-responsive" src="data:image/jpg;base64,<%= FeedArray[i].getBase64Image() %>"></div>
+                        <div class="feed-image p-2 px-3 marg"><img class="img-fluid img-responsive" src="data:image/jpg;base64,<%= FeedArray[i].getBase64Image() %>" width="650"></div>
                         <div class="bg-white">
                             <div class="d-flex flex-row fs-12">
                                 <div class="like p-2 cursor"><i class="fa fa-thumbs-up" aria-hidden="true"></i><span class="ml-1">Like</span></div>
@@ -183,7 +204,7 @@
 
                                 <div class="comment-widgets">
                                     <div class="d-flex flex-row comment-row m-t-0">
-                                       <div class="p-2"><img src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1574583336/AAA/4.jpg" alt="user" width="50" class="rounded-circle"></div>
+                                        <div class="p-2"><img src="<%= comments[k].getProfileimg() %>" alt="user" width="50" class="rounded-circle"></div>
                                        <div class="comment-text w-100">
                                            <h6 class="font-medium">   <%= comments[k].getCommentedUser()  %>          </h6> <span class="m-b-15 d-block">  <%= comments[k].getComment() %>           </span>
                                        </div>
@@ -206,7 +227,7 @@
                             <form method="post" action="<%= request.getContextPath() %>/homeAddcomment">
 
                             <div class="d-flex flex-row align-items-start">
-                                <img class="rounded-circle" src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1574583336/AAA/4.jpg" width="35" height="30">
+                                <img class="rounded-circle" src="<%= new getuserDP().getDP(new connect().getCon(), uname)  %>" width="35" height="30">
                                 <textarea name="comment" class="form-control ml-1 shadow-none textarea" placeholder="Add a comment"></textarea>
                             </div>
                                 <input type="hidden" name="authorname" value="<%= FeedArray[i].getUsername()%>" />
